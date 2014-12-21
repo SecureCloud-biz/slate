@@ -13,7 +13,7 @@
 
       <script>
         $(function() {
-          setupLanguages(["ruby","python","php"]);
+          setupLanguages(["ruby"]);
         });
       </script>
   </head>
@@ -50,8 +50,6 @@
     <div class="tocify-wrapper">
         <div class="lang-selector">
               <a href="#" data-language-name="ruby">ruby</a>
-              <a href="#" data-language-name="python">python</a>
-              <a href="#" data-language-name="php">php</a>
         </div>
       <div id="toc">
       </div>
@@ -60,7 +58,9 @@
       <div class="dark-box"></div>
       <div class="content">
         <h1 id='introduction'>Introduction</h1>
-<p>Welcome blablabla&hellip; <a href="https://www.octobat.com/">Octobat</a></p>
+<p>Welcome to the documentation of the service <a href="https://www.octobat.com/">Octobat</a>. </p>
+
+<p>We advice you to follow this documentation before to subscribe to Octobat.</p>
 <h1 id='environment'>Environment</h1>
 <blockquote>
 <p>Example B2B current_user object</p>
@@ -81,11 +81,13 @@
 <span class="p">}</span>
 </code></pre>
 
+<p>Will be very helpful that you have these fields in your own database.</p>
+
 <p><aside class="notice">
 <code class="prettyprint">current_user</code> is your customer.
 </aside></p>
 <h1 id='requirements'>Requirements</h1>
-<p>Blabla obligafions&hellip;</p>
+<p>To ensure that all your invoices are correctly generated, we recommend to use your calls to Stripe like these.</p>
 <h2 id='customers-amp-cards'>Customers &amp; Cards</h2>
 <blockquote>
 <p>Create a new Stripe customer</p>
@@ -129,8 +131,6 @@
 <span class="n">card</span><span class="p">.</span><span class="nf">save</span>
 </code></pre>
 
-<p>Blabla customers&hellip;</p>
-
 <p><aside class="notice">
 <code class="prettyprint">params[:stripeToken]</code> obtained with Stripe.js.
 </aside></p>
@@ -164,8 +164,6 @@ After do it, you can create any charge or subscription with the <code class="pre
   <span class="p">}</span>
 <span class="p">)</span>
 </code></pre>
-
-<p>Blabla charges&hellip;</p>
 
 <p><aside class="notice">
 If you want to calculate your own VAT rate, you can put it on the metadata field <code class="prettyprint">:vat_rate</code>. Thus, you don&rsquo;t have to fill the customer <code class="prettyprint">:business_type</code> and the charge <code class="prettyprint">:eservice</code> metadata.
@@ -209,14 +207,10 @@ If you want to calculate your own VAT rate, you can put it on the metadata field
 <span class="p">)</span>
 </code></pre>
 
-<p>Blabla subscriptions&hellip;</p>
-
       </div>
       <div class="dark-box">
           <div class="lang-selector">
                 <a href="#" data-language-name="ruby">ruby</a>
-                <a href="#" data-language-name="python">python</a>
-                <a href="#" data-language-name="php">php</a>
           </div>
       </div>
     </div>
