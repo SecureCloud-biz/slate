@@ -58,9 +58,9 @@
       <div class="dark-box"></div>
       <div class="content">
         <h1 id='introduction'>Introduction</h1>
-<p>Welcome to the documentation of the service <a href="https://www.octobat.com/">Octobat</a>. </p>
+<p>Welcome to the <a href="https://www.octobat.com/">Octobat</a> documentation. </p>
 
-<p>We advice you to follow this documentation before to subscribe to Octobat.</p>
+<p>We advice you to follow this documentation when subscribing to Octobat.</p>
 <h1 id='environment'>Environment</h1>
 <blockquote>
 <p>Example B2B current_user object</p>
@@ -87,20 +87,29 @@
 <code class="prettyprint">current_user</code> is your customer.
 </aside></p>
 <h1 id='requirements'>Requirements</h1>
-<p>To ensure that all your invoices are correctly generated, we recommend to use your calls to Stripe like these.</p>
+<p>To ensure that all your invoices are correctly generated, you must follow this pattern for your Stripe API calls.</p>
 <h2 id='customers-amp-cards'>Customers &amp; Cards</h2>
 <blockquote>
 <p>Create a new Stripe customer</p>
 </blockquote>
 <pre><code class="highlight ruby"><span class="k">if</span> <span class="n">customer</span><span class="p">.</span><span class="nf">nil?</span>
-  <span class="n">customer</span> <span class="o">=</span> <span class="no">Stripe</span><span class="o">::</span><span class="no">Customer</span><span class="p">.</span><span class="nf">create</span><span class="p">(</span>
-    <span class="ss">:email</span> <span class="o">=&gt;</span> <span class="n">current_user</span><span class="p">.</span><span class="nf">email</span><span class="p">,</span>
-    <span class="ss">:description</span> <span class="o">=&gt;</span> <span class="n">current_user</span><span class="p">.</span><span class="nf">business_name</span><span class="p">,</span> <span class="c1"># For B2B</span>
-    <span class="ss">:description</span> <span class="o">=&gt;</span> <span class="n">current_user</span><span class="p">.</span><span class="nf">first_name</span><span class="o">+</span><span class="s2">" "</span><span class="o">+</span><span class="n">current_user</span><span class="p">.</span><span class="nf">last_name</span><span class="p">,</span> <span class="c1"># For B2C</span>
-    <span class="ss">:metadata</span> <span class="o">=&gt;</span> <span class="p">{</span>
-      <span class="ss">:business_type</span> <span class="o">=&gt;</span> <span class="n">current_user</span><span class="p">.</span><span class="nf">business_type</span>
-    <span class="p">}</span>
-  <span class="p">)</span>
+  <span class="k">if</span> <span class="n">current_user</span><span class="p">.</span><span class="nf">business_type</span> <span class="o">==</span> <span class="s2">"B2B"</span>
+    <span class="n">customer</span> <span class="o">=</span> <span class="no">Stripe</span><span class="o">::</span><span class="no">Customer</span><span class="p">.</span><span class="nf">create</span><span class="p">(</span>
+      <span class="ss">:email</span> <span class="o">=&gt;</span> <span class="n">current_user</span><span class="p">.</span><span class="nf">email</span><span class="p">,</span>
+      <span class="ss">:description</span> <span class="o">=&gt;</span> <span class="n">current_user</span><span class="p">.</span><span class="nf">business_name</span><span class="p">,</span>
+      <span class="ss">:metadata</span> <span class="o">=&gt;</span> <span class="p">{</span>
+        <span class="ss">:business_type</span> <span class="o">=&gt;</span> <span class="n">current_user</span><span class="p">.</span><span class="nf">business_type</span>
+      <span class="p">}</span>
+    <span class="p">)</span>
+  <span class="k">else</span> <span class="c1"># for B2C</span>
+    <span class="n">customer</span> <span class="o">=</span> <span class="no">Stripe</span><span class="o">::</span><span class="no">Customer</span><span class="p">.</span><span class="nf">create</span><span class="p">(</span>
+      <span class="ss">:email</span> <span class="o">=&gt;</span> <span class="n">current_user</span><span class="p">.</span><span class="nf">email</span><span class="p">,</span>
+      <span class="ss">:description</span> <span class="o">=&gt;</span> <span class="n">current_user</span><span class="p">.</span><span class="nf">first_name</span><span class="o">+</span><span class="s2">" "</span><span class="o">+</span><span class="n">current_user</span><span class="p">.</span><span class="nf">last_name</span><span class="p">,</span>
+      <span class="ss">:metadata</span> <span class="o">=&gt;</span> <span class="p">{</span>
+        <span class="ss">:business_type</span> <span class="o">=&gt;</span> <span class="n">current_user</span><span class="p">.</span><span class="nf">business_type</span>
+      <span class="p">}</span>
+    <span class="p">)</span>
+  <span class="k">end</span>
   <span class="n">card</span> <span class="o">=</span> <span class="n">customer</span><span class="p">.</span><span class="nf">cards</span><span class="p">.</span><span class="nf">create</span><span class="p">(</span><span class="ss">card: </span><span class="n">params</span><span class="p">[</span><span class="ss">:stripeToken</span><span class="p">])</span>
   <span class="n">current_user</span><span class="p">.</span><span class="nf">update_attribute</span><span class="p">(</span><span class="ss">:customer_stripe_id</span><span class="p">,</span> <span class="n">customer</span><span class="p">.</span><span class="nf">id</span><span class="p">)</span>
 <span class="k">end</span>
@@ -118,11 +127,11 @@
 <blockquote>
 <p>Then fill the card data</p>
 </blockquote>
-<pre><code class="highlight ruby"><span class="c1"># for B2B</span>
-<span class="n">card</span><span class="p">.</span><span class="nf">name</span> <span class="o">=</span> <span class="n">current_user</span><span class="p">.</span><span class="nf">business_name</span>  <span class="k">if</span> <span class="o">!</span><span class="n">current_user</span><span class="p">.</span><span class="nf">business_name</span><span class="p">.</span><span class="nf">blank?</span>
-
- <span class="c1"># for B2C</span>
-<span class="n">card</span><span class="p">.</span><span class="nf">name</span> <span class="o">=</span> <span class="n">current_user</span><span class="p">.</span><span class="nf">first_name</span><span class="o">+</span><span class="s2">" "</span><span class="o">+</span><span class="n">current_user</span><span class="p">.</span><span class="nf">last_name</span>  <span class="k">if</span> <span class="o">!</span><span class="n">current_user</span><span class="p">.</span><span class="nf">first_name</span><span class="p">.</span><span class="nf">blank?</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="n">current_user</span><span class="p">.</span><span class="nf">last_name</span><span class="p">.</span><span class="nf">blank?</span>
+<pre><code class="highlight ruby"><span class="k">if</span> <span class="n">current_user</span><span class="p">.</span><span class="nf">business_type</span> <span class="o">==</span> <span class="s2">"B2B"</span>
+  <span class="n">card</span><span class="p">.</span><span class="nf">name</span> <span class="o">=</span> <span class="n">current_user</span><span class="p">.</span><span class="nf">business_name</span> <span class="k">if</span> <span class="o">!</span><span class="n">current_user</span><span class="p">.</span><span class="nf">business_name</span><span class="p">.</span><span class="nf">blank?</span>
+<span class="k">else</span> <span class="c1"># for B2C</span>
+  <span class="n">card</span><span class="p">.</span><span class="nf">name</span> <span class="o">=</span> <span class="n">current_user</span><span class="p">.</span><span class="nf">first_name</span><span class="o">+</span><span class="s2">" "</span><span class="o">+</span><span class="n">current_user</span><span class="p">.</span><span class="nf">last_name</span> <span class="k">if</span> <span class="o">!</span><span class="n">current_user</span><span class="p">.</span><span class="nf">first_name</span><span class="p">.</span><span class="nf">blank?</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="n">current_user</span><span class="p">.</span><span class="nf">last_name</span><span class="p">.</span><span class="nf">blank?</span>
+<span class="k">end</span>
 
 <span class="n">card</span><span class="p">.</span><span class="nf">address_line1</span> <span class="o">=</span> <span class="n">current_user</span><span class="p">.</span><span class="nf">address</span> <span class="k">if</span> <span class="o">!</span><span class="n">current_user</span><span class="p">.</span><span class="nf">address</span><span class="p">.</span><span class="nf">blank?</span>
 <span class="n">card</span><span class="p">.</span><span class="nf">address_city</span> <span class="o">=</span> <span class="n">current_user</span><span class="p">.</span><span class="nf">city</span> <span class="k">if</span> <span class="o">!</span><span class="n">current_user</span><span class="p">.</span><span class="nf">city</span><span class="p">.</span><span class="nf">blank?</span>
@@ -136,7 +145,7 @@
 </aside></p>
 
 <p><aside class="success">
-After do it, you can create any charge or subscription with the <code class="prettyprint">customer</code> object
+Create any charge or subscription within the <code class="prettyprint">customer</code> object
 </aside></p>
 <h3 id='arguments'>Arguments</h3>
 <table><thead>
@@ -149,7 +158,7 @@ After do it, you can create any charge or subscription with the <code class="pre
 <tr>
 <td>business_type <strong>optional</strong></td>
 <td>Your setting value in Octobat</td>
-<td>&ldquo;B2C&rdquo; or &ldquo;B2B&rdquo; possible value. This field helps Octobat to calculate the VAT rate of the charge.</td>
+<td>B2C/B2B : possible value. This is a required Octobat field to compute the VAT rate for the transaction.</td>
 </tr>
 </tbody></table>
 <h2 id='charges'>Charges</h2><pre><code class="highlight ruby"><span class="n">charge</span> <span class="o">=</span> <span class="no">Stripe</span><span class="o">::</span><span class="no">Charge</span><span class="p">.</span><span class="nf">create</span><span class="p">(</span>
@@ -166,7 +175,7 @@ After do it, you can create any charge or subscription with the <code class="pre
 </code></pre>
 
 <p><aside class="notice">
-If you want to calculate your own VAT rate, you can put it on the metadata field <code class="prettyprint">:vat_rate</code>. Thus, you don&rsquo;t have to fill the customer <code class="prettyprint">:business_type</code> and the charge <code class="prettyprint">:eservice</code> metadata.
+If you already know the VAT rate and don&rsquo;t need us to compute it for you, fill the metadata :vat_rate field. Thus, you don&rsquo;t have to fill the customer <code class="prettyprint">:business_type</code> and the charge <code class="prettyprint">:eservice</code> metadata.
 </aside></p>
 <h3 id='arguments'>Arguments</h3>
 <table><thead>
@@ -184,7 +193,7 @@ If you want to calculate your own VAT rate, you can put it on the metadata field
 <tr>
 <td>eservice <strong>optional</strong></td>
 <td>Your setting value in Octobat</td>
-<td>Will be treated if <code class="prettyprint">:business_type</code> is filled to &ldquo;B2C&rdquo;. This field helps Octobat to calculate the VAT rate of the charge.</td>
+<td>Will be processed if :business_type equals to &ldquo;B2C&rdquo;. This is a required Octobat field to compute the VAT rate for the transaction.</td>
 </tr>
 </tbody></table>
 <h2 id='subscriptions'>Subscriptions</h2><pre><code class="highlight ruby"><span class="n">plan</span> <span class="o">=</span> <span class="no">Stripe</span><span class="o">::</span><span class="no">Plan</span><span class="p">.</span><span class="nf">retrieve</span><span class="p">(</span><span class="s2">"octobat"</span><span class="p">)</span>
@@ -202,10 +211,62 @@ If you want to calculate your own VAT rate, you can put it on the metadata field
 <span class="n">customer</span><span class="p">.</span><span class="nf">subscriptions</span><span class="p">.</span><span class="nf">create</span><span class="p">(</span>
   <span class="ss">:plan</span> <span class="o">=&gt;</span> <span class="s2">"octobat"</span><span class="p">,</span>
   <span class="ss">:metadata</span> <span class="o">=&gt;</span> <span class="p">{</span>
+    <span class="ss">:vat_rate</span> <span class="o">=&gt;</span> <span class="mi">21</span><span class="p">,</span>
     <span class="ss">:eservice</span> <span class="o">=&gt;</span> <span class="kp">true</span>
   <span class="p">}</span>
 <span class="p">)</span>
 </code></pre>
+
+<p>Dealing with subscriptions is like dealing with simple charges, you must fill the metadata field to provide Octobat its required data to generate perfectly your invoices.</p>
+<h3 id='arguments'>Arguments</h3>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>vat_rate <strong>optional</strong></td>
+<td>Your setting value in Octobat</td>
+<td>The VAT rate of this charge.</td>
+</tr>
+<tr>
+<td>eservice <strong>optional</strong></td>
+<td>Your setting value in Octobat</td>
+<td>Will be processed if :business_type equals to &ldquo;B2C&rdquo;. This is a required Octobat field to compute the VAT rate for the transaction.</td>
+</tr>
+</tbody></table>
+<h2 id='invoice-items'>Invoice items</h2><pre><code class="highlight ruby"><span class="no">Stripe</span><span class="o">::</span><span class="no">InvoiceItem</span><span class="p">.</span><span class="nf">create</span><span class="p">(</span>
+  <span class="ss">:customer</span> <span class="o">=&gt;</span> <span class="n">current_user</span><span class="p">.</span><span class="nf">customer_stripe_id</span><span class="p">,</span> <span class="c1"># or customer.id</span>
+  <span class="ss">:amount</span> <span class="o">=&gt;</span> <span class="mi">1000</span><span class="p">,</span>
+  <span class="ss">:currency</span> <span class="o">=&gt;</span> <span class="s2">"eur"</span><span class="p">,</span>
+  <span class="ss">:description</span> <span class="o">=&gt;</span> <span class="s2">"The charge will appear on the invoice"</span><span class="p">,</span>
+  <span class="ss">:metadata</span> <span class="o">=&gt;</span> <span class="p">{</span>
+    <span class="ss">:vat_rate</span> <span class="o">=&gt;</span> <span class="mi">21</span><span class="p">,</span>
+    <span class="ss">:eservice</span> <span class="o">=&gt;</span> <span class="kp">true</span> <span class="c1"># or false</span>
+  <span class="p">}</span>
+<span class="p">)</span>
+</code></pre>
+<h3 id='arguments'>Arguments</h3>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>vat_rate <strong>optional</strong></td>
+<td>Your setting value in Octobat</td>
+<td>The VAT rate of this charge.</td>
+</tr>
+<tr>
+<td>eservice <strong>optional</strong></td>
+<td>Your setting value in Octobat</td>
+<td>Will be processed if :business_type equals to &ldquo;B2C&rdquo;. This is a required Octobat field to compute the VAT rate for the transaction.</td>
+</tr>
+</tbody></table>
 
       </div>
       <div class="dark-box">
