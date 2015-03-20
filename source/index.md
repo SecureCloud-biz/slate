@@ -50,7 +50,7 @@ Will be very helpful that you have these fields in your own database.
 To ensure that all your invoices are correctly generated, you must follow this pattern for your Stripe API calls.
 
 
-## Customers & Cards
+# Customers & Cards
 
 > Create a new Stripe customer
 
@@ -120,7 +120,7 @@ Parameter | Default | Description
 business_type **optional** | Your setting value in Octobat | B2C/B2B : possible value. This is a required Octobat field to compute the VAT rate for the transaction.
 
 
-## Charges
+# Charges
 
 ```ruby
 charge = Stripe::Charge.create(
@@ -148,7 +148,7 @@ vat_rate **optional** | Your setting value in Octobat | The VAT rate of this cha
 eservice **optional** | Your setting value in Octobat | Will be processed if :business_type equals to "B2C". This is a required Octobat field to compute the VAT rate for the transaction.
 
 
-## Subscriptions
+# Subscriptions
 
 ```ruby
 plan = Stripe::Plan.retrieve("octobat")
@@ -181,7 +181,7 @@ Parameter | Default | Description
 vat_rate **optional** | Your setting value in Octobat | The VAT rate of this charge.
 eservice **optional** | Your setting value in Octobat | Will be processed if :business_type equals to "B2C". This is a required Octobat field to compute the VAT rate for the transaction.
 
-## Invoice items
+# Invoice items
 
 ```ruby
 Stripe::InvoiceItem.create(
