@@ -19,23 +19,9 @@
   </head>
 
   <body class="index">
-    <header style="z-index:1000;">
-      <div class="container">
-        <span id="brand-logo">
-          <a href="https://www.octobat.com/"><img height="55px" src="images/logo-octobat-colored.png" /></a>
-        </span>
-        <ul id="lp-menu">
-          <li>
-            <a href="https://www.octobat.com/pricing">Pricing</a>
-          </li>
-        </ul>
-
-      </div>
-    </header>
-    <a href="#" id="nav-button">
+    <a href="https://www.octobat.com/" id="nav-button" target="_blank">
       <span>
-        NAV
-        <img src="images/navbar.png" />
+        <img src="images/logo_doc.png" />
       </span>
     </a>
     <div class="tocify-wrapper">
@@ -79,7 +65,7 @@
 </aside></p>
 <h1 id='requirements'>Requirements</h1>
 <p>To ensure that all your invoices are correctly generated, you must follow this pattern for your Stripe API calls.</p>
-<h2 id='customers-amp-cards'>Customers &amp; Cards</h2>
+<h1 id='customers-amp-cards'>Customers &amp; Cards</h1>
 <blockquote>
 <p>Create a new Stripe customer</p>
 </blockquote>
@@ -154,7 +140,7 @@ Create any charge or subscription within the <code class="prettyprint">customer<
 <td>B2C/B2B : possible value. This is a required Octobat field to compute the VAT rate for the transaction.</td>
 </tr>
 </tbody></table>
-<h2 id='charges'>Charges</h2><pre><code class="highlight ruby"><span class="n">charge</span> <span class="o">=</span> <span class="no">Stripe</span><span class="o">::</span><span class="no">Charge</span><span class="p">.</span><span class="nf">create</span><span class="p">(</span>
+<h1 id='charges'>Charges</h1><pre><code class="highlight ruby"><span class="n">charge</span> <span class="o">=</span> <span class="no">Stripe</span><span class="o">::</span><span class="no">Charge</span><span class="p">.</span><span class="nf">create</span><span class="p">(</span>
   <span class="ss">:amount</span>      <span class="o">=&gt;</span> <span class="mi">400</span><span class="p">,</span>
   <span class="ss">:currency</span>    <span class="o">=&gt;</span> <span class="s2">"eur"</span><span class="p">,</span>
   <span class="ss">:card</span>        <span class="o">=&gt;</span> <span class="n">card</span><span class="p">,</span>
@@ -189,7 +175,7 @@ If you already know the VAT rate and don&rsquo;t need us to compute it for you, 
 <td>Will be processed if :business_type equals to &ldquo;B2C&rdquo;. This is a required Octobat field to compute the VAT rate for the transaction.</td>
 </tr>
 </tbody></table>
-<h2 id='subscriptions'>Subscriptions</h2><pre><code class="highlight ruby"><span class="n">plan</span> <span class="o">=</span> <span class="no">Stripe</span><span class="o">::</span><span class="no">Plan</span><span class="p">.</span><span class="nf">retrieve</span><span class="p">(</span><span class="s2">"octobat"</span><span class="p">)</span>
+<h1 id='subscriptions'>Subscriptions</h1><pre><code class="highlight ruby"><span class="n">plan</span> <span class="o">=</span> <span class="no">Stripe</span><span class="o">::</span><span class="no">Plan</span><span class="p">.</span><span class="nf">retrieve</span><span class="p">(</span><span class="s2">"octobat"</span><span class="p">)</span>
 
 <span class="k">if</span> <span class="n">plan</span><span class="p">.</span><span class="nf">nil?</span>
   <span class="n">plan</span> <span class="o">=</span> <span class="no">Stripe</span><span class="o">::</span><span class="no">Plan</span><span class="p">.</span><span class="nf">create</span><span class="p">(</span>
@@ -230,7 +216,7 @@ If you already know the VAT rate and don&rsquo;t need us to compute it for you, 
 <td>Will be processed if :business_type equals to &ldquo;B2C&rdquo;. This is a required Octobat field to compute the VAT rate for the transaction.</td>
 </tr>
 </tbody></table>
-<h2 id='invoice-items'>Invoice items</h2><pre><code class="highlight ruby"><span class="no">Stripe</span><span class="o">::</span><span class="no">InvoiceItem</span><span class="p">.</span><span class="nf">create</span><span class="p">(</span>
+<h1 id='invoice-items'>Invoice items</h1><pre><code class="highlight ruby"><span class="no">Stripe</span><span class="o">::</span><span class="no">InvoiceItem</span><span class="p">.</span><span class="nf">create</span><span class="p">(</span>
   <span class="ss">:customer</span> <span class="o">=&gt;</span> <span class="n">current_user</span><span class="p">.</span><span class="nf">customer_stripe_id</span><span class="p">,</span> <span class="c1"># or customer.id</span>
   <span class="ss">:amount</span> <span class="o">=&gt;</span> <span class="mi">1000</span><span class="p">,</span>
   <span class="ss">:currency</span> <span class="o">=&gt;</span> <span class="s2">"eur"</span><span class="p">,</span>
