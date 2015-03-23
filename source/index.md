@@ -75,7 +75,7 @@ if customer.nil?
       }
     )
   end
-  card = customer.cards.create(card: params[:stripeToken])
+  card = customer.sources.create(card: params[:stripeToken])
   current_user.update_attribute(:customer_stripe_id, customer.id)
 end
 ```
@@ -84,7 +84,7 @@ end
 ```ruby
 unless current_user.customer_stripe_id.nil?
   customer = Stripe::Customer.retrieve(current_user.customer_stripe_id)
-  card = customer.cards.create(card: params[:stripeToken])
+  card = customer.sources.create(card: params[:stripeToken])
 end
 ```
 
