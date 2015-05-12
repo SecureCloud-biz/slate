@@ -3,6 +3,7 @@ title: dOctobat
 
 language_tabs:
   - ruby
+  - php: PHP
 
 toc_footers:
 
@@ -52,25 +53,47 @@ customer = Stripe::Customer.create(
     :ip_address => "87.176.10.2"
   }
 )
-
-
-
 ```
 
-> Then create a card fill the card data
+```php
+$customer = \Stripe\Customer::create(array(
+  "email" => "foo@bar.io",
+  "description" => "John Doe Inc.",
+  "metadata" => array(
+    "business_type" => "B2B", // Can be B2B or B2C
+    "vat_number" => "FR60528551658",
+    "ip_address" => "87.176.10.2"
+  )
+));
+```
+
+> Then create a card and fill the required billing data
 
 ```ruby
 
-card = customer.sources.create(card: params[:stripeToken]) # params[:stripeToken] is obtained from Stripe.js
+card = customer.sources.create(source: params[:stripeToken]) # params[:stripeToken] is obtained from Stripe.js
 
-card.name = customer_name
-card.address_line1 = customer_billing_address_line1
-card.address_line2 = customer_billing_address_line2
-card.address_city = customer_billing_address_city
-card.address_zip = customer_billing_address_zip
-card.address_state = customer_billing_state
-card.address_country = customer_billing_country
+card.name = "John Doe"
+card.address_line1 = "801 Via dei Condotti"
+card.address_line2 = "Secondo piano"
+card.address_city = "Roma"
+card.address_zip = "10000"
+card.address_state = ""
+card.address_country = "Italia"
 card.save
+```
+
+```php
+$card = $customer->sources->create(array("source" => $POST['stripeToken]));
+
+$card.name = "John Doe";
+$card.address_line1 = "801 Via dei Condotti";
+$card.address_line2 = "Secondo piano";
+$card.address_city = "Roma";
+$card.address_zip = "10000";
+$card.address_state = "";
+$card.address_country = "Italia";
+$card.save();
 ```
 
 
@@ -99,6 +122,18 @@ charge = Stripe::Charge.create(
   }
 )
 ```
+```php
+$charge = \Stripe\Charge::create(array(
+  "amount"      => 400,
+  "currency"    => "eur",
+  "card"        => $card,
+  "customer"    => $customer.id,
+  "description" => 'One time charge',
+  "metadata" => array(
+    "eservice" => true
+  )
+))
+```
 
 <aside class="notice">
 If you already know the VAT rate and don't need us to compute it for you, fill the metadata `vat_rate` field. Thus, you don't have to fill the customer `business_type` and the charge `eservice` metadata.
@@ -123,6 +158,14 @@ customer.subscriptions.create(
   }
 )
 ```
+```php
+$customer->subscriptions->create(array(
+  "plan" => "octobat",
+  "metadata" => array(
+    "eservice" => true
+  )
+))
+```
 
 Dealing with subscriptions is like dealing with simple charges, you must fill the metadata field to provide Octobat its required data to generate perfectly your invoices.
 
@@ -144,6 +187,17 @@ Stripe::InvoiceItem.create(
   :metadata => {
     :eservice => true # or false
   }
+)
+```
+```php
+Stripe::InvoiceItem.create(
+  "customer" => $customer.id, # or customer.id
+  "amount" => 1000,
+  "currency" => "eur",
+  "description" => "Invoice description",
+  "metadata" => array(
+    "eservice" => true # or false
+  )
 )
 ```
 
