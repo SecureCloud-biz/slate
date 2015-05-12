@@ -13,7 +13,7 @@
 
       <script>
         $(function() {
-          setupLanguages(["ruby"]);
+          setupLanguages(["ruby","php"]);
         });
       </script>
   </head>
@@ -27,6 +27,7 @@
     <div class="tocify-wrapper">
         <div class="lang-selector">
               <a href="#" data-language-name="ruby">ruby</a>
+              <a href="#" data-language-name="php">PHP</a>
         </div>
       <div id="toc">
       </div>
@@ -87,25 +88,43 @@
     <span class="ss">:ip_address</span> <span class="o">=&gt;</span> <span class="s2">"87.176.10.2"</span>
   <span class="p">}</span>
 <span class="p">)</span>
-
-
-
+</code></pre>
+<pre><code class="highlight php">$customer = \Stripe\Customer::create(array(
+  "email" =&gt; "foo@bar.io",
+  "description" =&gt; "John Doe Inc.",
+  "metadata" =&gt; array(
+    "business_type" =&gt; "B2B", // Can be B2B or B2C
+    "vat_number" =&gt; "FR60528551658",
+    "ip_address" =&gt; "87.176.10.2"
+  )
+));
 </code></pre>
 
 <blockquote>
-<p>Then create a card fill the card data</p>
+<p>Then create a card and fill the required billing data</p>
 </blockquote>
 <pre><code class="highlight ruby">
-<span class="n">card</span> <span class="o">=</span> <span class="n">customer</span><span class="p">.</span><span class="nf">sources</span><span class="p">.</span><span class="nf">create</span><span class="p">(</span><span class="ss">card: </span><span class="n">params</span><span class="p">[</span><span class="ss">:stripeToken</span><span class="p">])</span> <span class="c1"># params[:stripeToken] is obtained from Stripe.js</span>
+<span class="n">card</span> <span class="o">=</span> <span class="n">customer</span><span class="p">.</span><span class="nf">sources</span><span class="p">.</span><span class="nf">create</span><span class="p">(</span><span class="ss">source: </span><span class="n">params</span><span class="p">[</span><span class="ss">:stripeToken</span><span class="p">])</span> <span class="c1"># params[:stripeToken] is obtained from Stripe.js</span>
 
-<span class="n">card</span><span class="p">.</span><span class="nf">name</span> <span class="o">=</span> <span class="n">customer_name</span>
-<span class="n">card</span><span class="p">.</span><span class="nf">address_line1</span> <span class="o">=</span> <span class="n">customer_billing_address_line1</span>
-<span class="n">card</span><span class="p">.</span><span class="nf">address_line2</span> <span class="o">=</span> <span class="n">customer_billing_address_line2</span>
-<span class="n">card</span><span class="p">.</span><span class="nf">address_city</span> <span class="o">=</span> <span class="n">customer_billing_address_city</span>
-<span class="n">card</span><span class="p">.</span><span class="nf">address_zip</span> <span class="o">=</span> <span class="n">customer_billing_address_zip</span>
-<span class="n">card</span><span class="p">.</span><span class="nf">address_state</span> <span class="o">=</span> <span class="n">customer_billing_state</span>
-<span class="n">card</span><span class="p">.</span><span class="nf">address_country</span> <span class="o">=</span> <span class="n">customer_billing_country</span>
+<span class="n">card</span><span class="p">.</span><span class="nf">name</span> <span class="o">=</span> <span class="s2">"John Doe"</span>
+<span class="n">card</span><span class="p">.</span><span class="nf">address_line1</span> <span class="o">=</span> <span class="s2">"801 Via dei Condotti"</span>
+<span class="n">card</span><span class="p">.</span><span class="nf">address_line2</span> <span class="o">=</span> <span class="s2">"Secondo piano"</span>
+<span class="n">card</span><span class="p">.</span><span class="nf">address_city</span> <span class="o">=</span> <span class="s2">"Roma"</span>
+<span class="n">card</span><span class="p">.</span><span class="nf">address_zip</span> <span class="o">=</span> <span class="s2">"10000"</span>
+<span class="n">card</span><span class="p">.</span><span class="nf">address_state</span> <span class="o">=</span> <span class="s2">""</span>
+<span class="n">card</span><span class="p">.</span><span class="nf">address_country</span> <span class="o">=</span> <span class="s2">"Italia"</span>
 <span class="n">card</span><span class="p">.</span><span class="nf">save</span>
+</code></pre>
+<pre><code class="highlight php">$card = $customer-&gt;sources-&gt;create(array("source" =&gt; $POST['stripeToken]));
+
+$card.name = "John Doe";
+$card.address_line1 = "801 Via dei Condotti";
+$card.address_line2 = "Secondo piano";
+$card.address_city = "Roma";
+$card.address_zip = "10000";
+$card.address_state = "";
+$card.address_country = "Italia";
+$card.save();
 </code></pre>
 <h3 id='arguments'>Arguments</h3>
 <table><thead>
@@ -152,6 +171,17 @@
   <span class="p">}</span>
 <span class="p">)</span>
 </code></pre>
+<pre><code class="highlight php">$charge = \Stripe\Charge::create(array(
+  "amount"      =&gt; 400,
+  "currency"    =&gt; "eur",
+  "card"        =&gt; $card,
+  "customer"    =&gt; $customer.id,
+  "description" =&gt; 'One time charge',
+  "metadata" =&gt; array(
+    "eservice" =&gt; true
+  )
+))
+</code></pre>
 
 <p><aside class="notice">
 If you already know the VAT rate and don&rsquo;t need us to compute it for you, fill the metadata <code class="prettyprint">vat_rate</code> field. Thus, you don&rsquo;t have to fill the customer <code class="prettyprint">business_type</code> and the charge <code class="prettyprint">eservice</code> metadata.
@@ -187,6 +217,13 @@ If you already know the VAT rate and don&rsquo;t need us to compute it for you, 
   <span class="p">}</span>
 <span class="p">)</span>
 </code></pre>
+<pre><code class="highlight php">$customer-&gt;subscriptions-&gt;create(array(
+  "plan" =&gt; "octobat",
+  "metadata" =&gt; array(
+    "eservice" =&gt; true
+  )
+))
+</code></pre>
 
 <p>Dealing with subscriptions is like dealing with simple charges, you must fill the metadata field to provide Octobat its required data to generate perfectly your invoices.</p>
 <h3 id='arguments'>Arguments</h3>
@@ -218,6 +255,16 @@ If you already know the VAT rate and don&rsquo;t need us to compute it for you, 
   <span class="p">}</span>
 <span class="p">)</span>
 </code></pre>
+<pre><code class="highlight php">Stripe::InvoiceItem.create(
+  "customer" =&gt; $customer.id, # or customer.id
+  "amount" =&gt; 1000,
+  "currency" =&gt; "eur",
+  "description" =&gt; "Invoice description",
+  "metadata" =&gt; array(
+    "eservice" =&gt; true # or false
+  )
+)
+</code></pre>
 <h3 id='arguments'>Arguments</h3>
 <table><thead>
 <tr>
@@ -242,6 +289,7 @@ If you already know the VAT rate and don&rsquo;t need us to compute it for you, 
       <div class="dark-box">
           <div class="lang-selector">
                 <a href="#" data-language-name="ruby">ruby</a>
+                <a href="#" data-language-name="php">PHP</a>
           </div>
       </div>
     </div>
