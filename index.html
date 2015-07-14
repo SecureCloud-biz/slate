@@ -36,7 +36,7 @@
       <div class="dark-box"></div>
       <div class="content">
         <h1 id='introduction'>Introduction</h1>
-<p>Welcome to the <a href="https://www.octobat.com/">Octobat</a> documentation. </p>
+<p>Welcome to the <a href="https://www.octobat.com/">Octobat</a> documentation.</p>
 
 <p>We advice you to follow this documentation when subscribing to Octobat.</p>
 <h1 id='environment'>Environment</h1>
@@ -117,14 +117,14 @@
 </code></pre>
 <pre><code class="highlight php">$card = $customer-&gt;sources-&gt;create(array("source" =&gt; $POST['stripeToken]));
 
-$card.name = "John Doe";
-$card.address_line1 = "801 Via dei Condotti";
-$card.address_line2 = "Secondo piano";
-$card.address_city = "Roma";
-$card.address_zip = "10000";
-$card.address_state = "";
-$card.address_country = "Italia";
-$card.save();
+$card-&gt;name = "John Doe";
+$card-&gt;address_line1 = "801 Via dei Condotti";
+$card-&gt;address_line2 = "Secondo piano";
+$card-&gt;address_city = "Roma";
+$card-&gt;address_zip = "10000";
+$card-&gt;address_state = "";
+$card-&gt;address_country = "Italia";
+$card-&gt;save();
 </code></pre>
 <h3 id='arguments'>Arguments</h3>
 <table><thead>
