@@ -8,14 +8,14 @@ language_tabs:
 toc_footers:
 
 includes:
-  
+
 
 search: false
 ---
 
 # Introduction
 
-Welcome to the [Octobat](https://www.octobat.com/) documentation. 
+Welcome to the [Octobat](https://www.octobat.com/) documentation.
 
 We advice you to follow this documentation when subscribing to Octobat.
 
@@ -86,14 +86,14 @@ card.save
 ```php
 $card = $customer->sources->create(array("source" => $POST['stripeToken]));
 
-$card.name = "John Doe";
-$card.address_line1 = "801 Via dei Condotti";
-$card.address_line2 = "Secondo piano";
-$card.address_city = "Roma";
-$card.address_zip = "10000";
-$card.address_state = "";
-$card.address_country = "Italia";
-$card.save();
+$card->name = "John Doe";
+$card->address_line1 = "801 Via dei Condotti";
+$card->address_line2 = "Secondo piano";
+$card->address_city = "Roma";
+$card->address_zip = "10000";
+$card->address_state = "";
+$card->address_country = "Italia";
+$card->save();
 ```
 
 
